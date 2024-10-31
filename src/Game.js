@@ -1,33 +1,26 @@
-import { useState } from "react";
+import { store } from "./Redux/store";
 import style from "./Game.module.css";
 import { Field } from "./components/field/field";
 import { Information } from "./components/information/information";
-import { GAME } from "./utils/game_array";
 import { WIN_PATTERNS } from "./utils/win_pattern";
 import PropTypes from "prop-types";
+import {
+    CURRENT,
+    DRAW,
+    END,
+    FIELD,
+    RESTART_GAME,
+    WIN_PTRN,
+} from "./Redux/types";
+import { useEffect, useState } from "react";
 
-const GameLayout = ({
-    isGameEnded,
-    isDraw,
-    currentPlayer,
-    field,
-    handleClick,
-    handleReset,
-    winningPattern,
-}) => {
+const GameLayout = ({ handleReset, handleClick }) => {
+    const { isGameEnded } = store.getState();
     return (
         <>
             <div className={style.game}>
-                <Information
-                    isGameEnded={isGameEnded}
-                    isDraw={isDraw}
-                    currentPlayer={currentPlayer}
-                />
-                <Field
-                    field={field}
-                    handleClick={handleClick}
-                    winningPattern={winningPattern}
-                />
+                <Information />
+                <Field handleClick={handleClick} />
                 <button
                     onClick={handleReset}
                     className={style.btn + " " + (isGameEnded ? style.end : "")}
@@ -39,7 +32,7 @@ const GameLayout = ({
     );
 };
 
-GameLayout.prototype = {
+GameLayout.protoType = {
     isGameEnded: PropTypes.bool,
     isDraw: PropTypes.bool,
     field: PropTypes.array,
@@ -50,18 +43,17 @@ GameLayout.prototype = {
 };
 
 export const Game = () => {
-    const [currentPlayer, setCurrentPlayer] = useState("X");
-    const [isGameEnded, setIsGameEnded] = useState(false);
-    const [isDraw, setIsDraw] = useState(false);
-    const [field, setField] = useState(GAME);
-    const [winningPattern, setWinningPattern] = useState([]);
+    const [state, setState] = useState(store.getState());
+    useEffect(() => {
+        const unsubscribe = store.subscribe(() => {
+            setState(store.getState());
+        });
 
+        return () => unsubscribe();
+    }, []);
+    const { currentPlayer, field, isGameEnded } = state;
     const handleReset = () => {
-        setCurrentPlayer("X");
-        setIsGameEnded(false);
-        setIsDraw(false);
-        setField(GAME);
-        setWinningPattern([]);
+        store.dispatch({ type: RESTART_GAME });
     };
     const checkWin = (field) => {
         for (let pattern of WIN_PATTERNS) {
@@ -74,30 +66,23 @@ export const Game = () => {
         if (field[item] || isGameEnded) return;
         const newField = [...field];
         newField[item] = currentPlayer;
-        setField(newField);
+        store.dispatch({ type: FIELD, payload: newField });
         const winPattern = checkWin(newField);
         if (winPattern) {
-            setIsGameEnded(true);
-            setWinningPattern(winPattern);
+            store.dispatch({ type: END, payload: true });
+            store.dispatch({ type: WIN_PTRN, payload: winPattern });
             return;
         }
         if (newField.every((cell) => cell !== "")) {
-            setIsDraw(true);
-            setIsGameEnded(true);
+            store.dispatch({ type: DRAW, payload: true });
+            store.dispatch({ type: END, payload: true });
             return;
         }
-        setCurrentPlayer(currentPlayer === "X" ? "0" : "X");
+        store.dispatch({
+            type: CURRENT,
+            payload: currentPlayer === "X" ? "0" : "X",
+        });
     };
-    return (
-        <GameLayout
-            isGameEnded={isGameEnded}
-            isDraw={isDraw}
-            field={field}
-            currentPlayer={currentPlayer}
-            setField={setField}
-            handleClick={handleClick}
-            handleReset={handleReset}
-            winningPattern={winningPattern}
-        />
-    );
+
+    return <GameLayout handleClick={handleClick} handleReset={handleReset} />;
 };

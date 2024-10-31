@@ -1,6 +1,8 @@
+import { store } from "../../Redux/store";
 import style from "./information.module.css";
 
-const InformationLayout = ({ isGameEnded, isDraw, currentPlayer }) => {
+const InformationLayout = () => {
+    const { isDraw, isGameEnded, currentPlayer } = store.getState();
     let massage;
     if (isDraw) {
         massage = "Ничья";
@@ -15,14 +17,10 @@ const InformationLayout = ({ isGameEnded, isDraw, currentPlayer }) => {
         </>
     );
 };
-export const Information = ({ isGameEnded, isDraw, currentPlayer }) => {
+export const Information = () => {
     return (
         <>
-            <InformationLayout
-                isGameEnded={isGameEnded}
-                isDraw={isDraw}
-                currentPlayer={currentPlayer}
-            />
+            <InformationLayout />
         </>
     );
 };

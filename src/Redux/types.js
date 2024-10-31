@@ -1,0 +1,6 @@
+export const CURRENT = 'SET_CURRENT_PLAYER'
+export const DRAW = 'SET_DRAW'
+export const END = 'SET_IS_GAME_ENDED'
+export const FIELD = 'SET_FIELD'
+export const WIN_PTRN = 'SET_WIN_PATTERN'
+export const RESTART_GAME = 'RESTART_GAME'
