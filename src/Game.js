@@ -4,15 +4,15 @@ import { Field } from "./components/field/field";
 import { Information } from "./components/information/information";
 import { WIN_PATTERNS } from "./utils/win_pattern";
 import PropTypes from "prop-types";
-import {
-    CURRENT,
-    DRAW,
-    END,
-    FIELD,
-    RESTART_GAME,
-    WIN_PTRN,
-} from "./Redux/types";
 import { useEffect, useState } from "react";
+import {
+    current,
+    draw,
+    end,
+    gameField,
+    restart,
+    winPtrn,
+} from "./Redux/actions";
 
 const GameLayout = ({ handleReset, handleClick }) => {
     const { isGameEnded } = store.getState();
@@ -53,7 +53,7 @@ export const Game = () => {
     }, []);
     const { currentPlayer, field, isGameEnded } = state;
     const handleReset = () => {
-        store.dispatch({ type: RESTART_GAME });
+        store.dispatch(restart());
     };
     const checkWin = (field) => {
         for (let pattern of WIN_PATTERNS) {
@@ -66,22 +66,19 @@ export const Game = () => {
         if (field[item] || isGameEnded) return;
         const newField = [...field];
         newField[item] = currentPlayer;
-        store.dispatch({ type: FIELD, payload: newField });
+        store.dispatch(gameField(newField));
         const winPattern = checkWin(newField);
         if (winPattern) {
-            store.dispatch({ type: END, payload: true });
-            store.dispatch({ type: WIN_PTRN, payload: winPattern });
+            store.dispatch(end(true), { payload: true });
+            store.dispatch(winPtrn(winPattern));
             return;
         }
         if (newField.every((cell) => cell !== "")) {
-            store.dispatch({ type: DRAW, payload: true });
-            store.dispatch({ type: END, payload: true });
+            store.dispatch(draw(true));
+            store.dispatch(end(true));
             return;
         }
-        store.dispatch({
-            type: CURRENT,
-            payload: currentPlayer === "X" ? "0" : "X",
-        });
+        store.dispatch(current(currentPlayer === "X" ? "0" : "X"));
     };
 
     return <GameLayout handleClick={handleClick} handleReset={handleReset} />;

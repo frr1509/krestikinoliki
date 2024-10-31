@@ -1,6 +1,6 @@
 import { store } from "../../Redux/store";
 import style from "./field.module.css";
-
+    
 const FieldLayout = ({ handleClick }) => {
     const { winningPattern, field } = store.getState();
     const isWinningPattern = (winningPattern, id) => {
