@@ -69,7 +69,7 @@ export const Game = () => {
         store.dispatch(gameField(newField));
         const winPattern = checkWin(newField);
         if (winPattern) {
-            store.dispatch(end(true), { payload: true });
+            store.dispatch(end(true));
             store.dispatch(winPtrn(winPattern));
             return;
         }
