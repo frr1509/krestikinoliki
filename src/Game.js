@@ -4,7 +4,7 @@ import { Field } from "./components/field/field";
 import { Information } from "./components/information/information";
 import { WIN_PATTERNS } from "./utils/win_pattern";
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
     current,
     draw,
@@ -13,6 +13,11 @@ import {
     restart,
     winPtrn,
 } from "./Redux/actions";
+import {
+    SelectCurrentPlayer,
+    SelectIsGameEnded,
+    SelectField,
+} from "./Redux/selects";
 
 const GameLayout = ({ handleReset, handleClick }) => {
     const { isGameEnded } = store.getState();
@@ -43,17 +48,13 @@ GameLayout.protoType = {
 };
 
 export const Game = () => {
-    const [state, setState] = useState(store.getState());
-    useEffect(() => {
-        const unsubscribe = store.subscribe(() => {
-            setState(store.getState());
-        });
+    const dispatch = useDispatch();
+    const currentPlayer = useSelector(SelectCurrentPlayer);
+    const field = useSelector(SelectField);
+    const isGameEnded = useSelector(SelectIsGameEnded);
 
-        return () => unsubscribe();
-    }, []);
-    const { currentPlayer, field, isGameEnded } = state;
     const handleReset = () => {
-        store.dispatch(restart());
+        dispatch(restart());
     };
     const checkWin = (field) => {
         for (let pattern of WIN_PATTERNS) {
@@ -66,19 +67,19 @@ export const Game = () => {
         if (field[item] || isGameEnded) return;
         const newField = [...field];
         newField[item] = currentPlayer;
-        store.dispatch(gameField(newField));
+        dispatch(gameField(newField));
         const winPattern = checkWin(newField);
         if (winPattern) {
-            store.dispatch(end(true));
-            store.dispatch(winPtrn(winPattern));
+            dispatch(end(true));
+            dispatch(winPtrn(winPattern));
             return;
         }
         if (newField.every((cell) => cell !== "")) {
-            store.dispatch(draw(true));
-            store.dispatch(end(true));
+            dispatch(draw(true));
+            dispatch(end(true));
             return;
         }
-        store.dispatch(current(currentPlayer === "X" ? "0" : "X"));
+        dispatch(current(currentPlayer === "X" ? "0" : "X"));
     };
 
     return <GameLayout handleClick={handleClick} handleReset={handleReset} />;

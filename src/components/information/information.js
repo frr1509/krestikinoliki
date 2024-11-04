@@ -1,8 +1,15 @@
-import { store } from "../../Redux/store";
+import { useSelector } from "react-redux";
 import style from "./information.module.css";
+import {
+    SelecrIsDraw,
+    SelectCurrentPlayer,
+    SelectIsGameEnded,
+} from "../../Redux/selects";
 
 const InformationLayout = () => {
-    const { isDraw, isGameEnded, currentPlayer } = store.getState();
+    const isDraw = useSelector(SelecrIsDraw);
+    const isGameEnded = useSelector(SelectIsGameEnded);
+    const currentPlayer = useSelector(SelectCurrentPlayer);
     let massage;
     if (isDraw) {
         massage = "Ничья";

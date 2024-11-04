@@ -1,8 +1,11 @@
-import { store } from "../../Redux/store";
+import { SelectField, SelectWinningPatter } from "../../Redux/selects";
 import style from "./field.module.css";
-    
+import { useSelector } from "react-redux";
+
 const FieldLayout = ({ handleClick }) => {
-    const { winningPattern, field } = store.getState();
+    const winningPattern = useSelector(SelectWinningPatter);
+    const field = useSelector(SelectField);
+
     const isWinningPattern = (winningPattern, id) => {
         return winningPattern.includes(id);
     };
