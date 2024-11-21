@@ -1,5 +1,4 @@
 import { connect } from "react-redux";
-import style from "./information.module.css";
 import { Component } from "react";
 
 class InformationLayoutConteiner extends Component {
@@ -7,18 +6,22 @@ class InformationLayoutConteiner extends Component {
         super();
     }
     render() {
-        let massage;
+        let message;
         if (this.props.isDraw) {
-            massage = "Ничья";
+            message = "Ничья";
         } else if (this.props.isGameEnded) {
-            massage = `Победа: ${this.props.currentPlayer}`;
+            message = `Победа: ${this.props.currentPlayer}`;
         } else {
-            massage = `Ходит: ${this.props.currentPlayer}`;
+            message = `Ходит: ${this.props.currentPlayer}`;
         }
         return (
-            <>
-                <div className={style.info}>{massage}</div>
-            </>
+            <div className="text-center mb-4">
+                <div className="bg-white shadow-lg rounded-lg p-4">
+                    <h2 className="text-xl font-semibold text-indigo-600">
+                        {message}
+                    </h2>
+                </div>
+            </div>
         );
     }
 }

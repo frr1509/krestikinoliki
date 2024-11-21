@@ -1,4 +1,4 @@
-import style from "./Game.module.css";
+// import style from "./Game.module.css";
 import { Field } from "./components/field/field";
 import { Information } from "./components/information/information";
 import PropTypes from "prop-types";
@@ -13,22 +13,18 @@ class GameLayoutConteiner extends Component {
 
     render() {
         return (
-            <>
-                <div className={style.game}>
+            <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-blue-400 to-purple-500">
+                <div className="bg-white shadow-lg rounded-lg p-6 md:max-w-md w-full text-center">
                     <Information />
                     <Field />
                     <button
                         onClick={this.handleReset}
-                        className={
-                            style.btn +
-                            " " +
-                            (this.props.isGameEnded ? style.end : "")
-                        }
+                        className="mt-4 px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-500 transition duration-300 ease-in-out"
                     >
                         Начать заново
                     </button>
                 </div>
-            </>
+            </div>
         );
     }
 }

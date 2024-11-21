@@ -1,5 +1,4 @@
 import { Component } from "react";
-import style from "./field.module.css";
 import { connect } from "react-redux";
 import { WIN_PATTERNS } from "../../utils/win_pattern";
 import { current, draw, end, gameField, winPtrn } from "../../Redux/actions";
@@ -41,19 +40,15 @@ class FieldLayoutConteiner extends Component {
         return this.props.winningPattern.includes(id);
     };
 
-
     render() {
         return (
-            <div className={style.field}>
+            <div className="grid grid-cols-3 gap-4">
                 {this.props.field.map((item, id) => (
                     <button
                         key={id}
                         onClick={() => this.handleClick(id)}
-                        className={
-                            style.cell +
-                            " " +
-                            (this.isWinningPattern(id) ? style.decor : "")
-                        }
+                        className={`w-16 h-16 text-2xl font-bold flex items-center justify-center border-2 border-gray-300 rounded-lg transition duration-200 ease-in-out
+                            ${this.isWinningPattern(id) ? "bg-green-300" : "bg-white hover:bg-gray-100"}`}
                     >
                         {item}
                     </button>
