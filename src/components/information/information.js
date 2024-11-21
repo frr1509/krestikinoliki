@@ -1,33 +1,44 @@
-import { useSelector } from "react-redux";
+import { connect } from "react-redux";
 import style from "./information.module.css";
-import {
-    SelecrIsDraw,
-    SelectCurrentPlayer,
-    SelectIsGameEnded,
-} from "../../Redux/selects";
+import { Component } from "react";
 
-const InformationLayout = () => {
-    const isDraw = useSelector(SelecrIsDraw);
-    const isGameEnded = useSelector(SelectIsGameEnded);
-    const currentPlayer = useSelector(SelectCurrentPlayer);
-    let massage;
-    if (isDraw) {
-        massage = "Ничья";
-    } else if (isGameEnded) {
-        massage = `Победа: ${currentPlayer}`;
-    } else {
-        massage = `Ходит: ${currentPlayer}`;
+class InformationLayoutConteiner extends Component {
+    constructor(props) {
+        super();
     }
-    return (
-        <>
-            <div className={style.info}>{massage}</div>
-        </>
-    );
+    render() {
+        let massage;
+        if (this.props.isDraw) {
+            massage = "Ничья";
+        } else if (this.props.isGameEnded) {
+            massage = `Победа: ${this.props.currentPlayer}`;
+        } else {
+            massage = `Ходит: ${this.props.currentPlayer}`;
+        }
+        return (
+            <>
+                <div className={style.info}>{massage}</div>
+            </>
+        );
+    }
+}
+
+const mapStateToProps = (state) => {
+    return {
+        isDraw: state.isDraw,
+        isGameEnded: state.isGameEnded,
+        currentPlayer: state.currentPlayer,
+    };
 };
-export const Information = () => {
-    return (
-        <>
-            <InformationLayout />
-        </>
-    );
-};
+
+const InformationLayout = connect(mapStateToProps)(InformationLayoutConteiner);
+
+export class Information extends Component {
+    render() {
+        return (
+            <>
+                <InformationLayout />
+            </>
+        );
+    }
+}

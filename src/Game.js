@@ -2,27 +2,52 @@ import style from "./Game.module.css";
 import { Field } from "./components/field/field";
 import { Information } from "./components/information/information";
 import PropTypes from "prop-types";
-import { useHandleClick, useHandleReset } from "./hooks";
-import { useSelector } from "react-redux";
-import { SelectIsGameEnded } from "./Redux/selects";
+import { connect } from "react-redux";
+import { Component } from "react";
+import { restart } from "./Redux/actions";
 
-const GameLayout = ({ handleReset, handleClick }) => {
-    const isGameEnded = useSelector(SelectIsGameEnded);
-    return (
-        <>
-            <div className={style.game}>
-                <Information />
-                <Field handleClick={handleClick} />
-                <button
-                    onClick={handleReset}
-                    className={style.btn + " " + (isGameEnded ? style.end : "")}
-                >
-                    Начать заново
-                </button>
-            </div>
-        </>
-    );
+class GameLayoutConteiner extends Component {
+    handleReset = () => {
+        this.props.dispatch(restart());
+    };
+
+    render() {
+        return (
+            <>
+                <div className={style.game}>
+                    <Information />
+                    <Field />
+                    <button
+                        onClick={this.handleReset}
+                        className={
+                            style.btn +
+                            " " +
+                            (this.props.isGameEnded ? style.end : "")
+                        }
+                    >
+                        Начать заново
+                    </button>
+                </div>
+            </>
+        );
+    }
+}
+
+const mapStateToProps = (state) => {
+    return {
+        isGameEnded: state.isGameEnded,
+    };
 };
+const mapDispatchToProps = (dispatch) => {
+    return {
+        dispatch,
+    };
+};
+
+const GameLayout = connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(GameLayoutConteiner);
 
 GameLayout.protoType = {
     isGameEnded: PropTypes.bool,
@@ -34,9 +59,8 @@ GameLayout.protoType = {
     winningPattern: PropTypes.array,
 };
 
-export const Game = () => {
-    const { handleClick } = useHandleClick();
-    const { handleReset } = useHandleReset();
-
-    return <GameLayout handleClick={handleClick} handleReset={handleReset} />;
-};
+export class Game extends Component {
+    render() {
+        return <GameLayout />;
+    }
+}
